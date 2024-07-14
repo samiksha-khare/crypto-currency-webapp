@@ -1,0 +1,156 @@
+<% include partials/header.ejs%>
+<div id="content" class="main-container margin-top-70">
+    <div class="col-md-12" id="currency-detail">
+        <div class="col-md-4 col-xs-12 coin_summary_bar">
+            <div class="name_rank_container">
+                <div class="rank_flag">
+                    <div class="rank_flag_text">
+                        <span><%=display[0]['rank']%></span>
+                    </div>
+                    <div class="rank_flag_desc">
+                        <p style="margin-left: 18px;" class="sprite small_coin_logo s-s-<%=(display[0]['name'].toLowerCase()).replace(/\s/g,"-").replace(/\./g,"") %>"></p>
+                    </div>
+                    <div class="rank_flag_trig"></div>
+                </div>
+                <div class="coin_name_buttons_container">
+                    <div style="margin: 16px 0px; display: inline-block">
+                        <span style="text-transform: uppercase" class="coin_name_buttons_name" id="coin_name_buttons_name">
+                            <%= display[0]['name']%>
+                        </span>
+                        <span  class="coin_name_buttons_symbol">&nbsp;(<%= display[0]['symbol']%>)</span>
+                        <br>
+                        <span id="twitter-div" style="display: none"><img style="margin-left:10px;" width="30px" src="/public/images/twitter_black.png"><a target="_blank" id="twitter-content"></a></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7 col-xs-12 coin_market_info_container">
+            <div class="coin_market_info_price">
+                <span style="color: rgb(255, 255, 255);">$<%=parseFloat(display[0]['price_usd']).toFixed(3)%></span>
+                <% if(parseFloat(display[0]['percent_change_24h']) < 0){ %>
+                <span class="red"><%=display[0]['percent_change_24h'] + '%'%><sub style="color: #ccc; font-size: x-small">(last 24 hrs)</sub></span>
+                <% } %>
+                <% if(parseFloat(display[0]['percent_change_24h']) >= 0) {%>
+                <span class="green"><%=display[0]['percent_change_24h'] + '%'%><sub style="color: #ccc; font-size: x-small">(last 24 hrs)</sub></span>
+                <% } %>
+            </div>
+            <table class="margin-top-20" style="border-collapse: collapse;">
+                <tbody>
+                <tr>
+                    <th class="coin_market_info_th"><span>Market Cap</span></th>
+                    <th class="coin_market_info_th"><span>24 Hour Volume</span></th>
+                    <th class="coin_market_info_th"><span>Available Supply</span></th>
+                </tr>
+                <tr style="color: white;">
+                    <td class="coin_market_info_td"><%=!(isNaN(parseFloat(display[0]['market_cap_usd']))) ? '$ '+(parseFloat(display[0]['market_cap_usd'])/1000000000).toFixed(3) +' B' : '-' %></td>
+                    <td class="coin_market_info_td"><%=!(isNaN(parseFloat(display[0]['24h_volume_usd']))) ? '$ '+(parseFloat(display[0]['24h_volume_usd'])/1000000000).toFixed(3) +' B' : '-' %></td>
+                    <td class="coin_market_info_td"><%=!(isNaN(parseFloat(display[0]['available_supply']))) ? '$ '+(parseFloat(display[0]['available_supply'])/1000000000).toFixed(3) +' B' : '-' %></td>
+                </tr>
+                <tr>
+                    <th class="coin_market_info_th"><span>Total Supply</span></th>
+                    <th class="coin_market_info_th"><span>Max Supply</span></th>
+                    <th class="coin_market_info_th"><span>Change 1 hr</span></th>
+                </tr>
+                <tr style="color: white;">
+                    <td class="coin_market_info_td"><%=!(isNaN(parseFloat(display[0]['total_supply']))) ? '$ '+(parseFloat(display[0]['total_supply'])/1000000000).toFixed(3) +' B' : '-'%></td>
+                    <td class="coin_market_info_td"><%=!(isNaN(parseFloat(display[0]['max_supply']))) ? '$ '+(parseFloat(display[0]['max_supply'])/1000000000).toFixed(3) +' B' : '-'%></td>
+                    <td class="coin_market_info_td"><%=!(isNaN(parseFloat(display[0]['percent_change_1h']))) ? display[0]['percent_change_1h'] + ' %' : '-'%></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <% include partials/loading.ejs%>
+    <div class="col-md-12 col-xs-12 margin-top-70" id="charts" style="display: none">
+        <div class="col-md-8 col-xs-5 hidden-sm hidden-xs">
+            <ul class="nav nav-pills chart-options">
+                <li class="nav-item active">
+                    <a class="nav-link" id="price-chart-option" data-toggle="tab" href="#price-chart-div">Price</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-md-2 col-xs-5 hidden-sm hidden-xs" style="float: right">
+            <select id="days-selector" class="form-control">
+                <option value="one_day">1 Day</option>
+                <option value="seven_day">7 Days</option>
+                <option value="thirty_day">30 Days</option>
+                <option value="ninety_day">90 Days</option>
+            </select>
+        </div>
+        <div class="col-md-12 col-xs-12 margin-top-20 tab-content hidden-sm hidden-xs" id="charts">
+            <div class="tab-pane active chart" id="price-chart-div">
+                <canvas id="price-chart" style=""></canvas>
+            </div>
+        </div>
+
+
+        <div class="col-md-8 margin-top-30 col-xs-12" id="description-tabs">
+            <ul class="nav nav-pills description-options">
+                <li class="nav-item active">
+                    <a class="nav-link col-xs-4" id="description-tab" data-toggle="tab" href="#description">Description</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link col-xs-4" id="features-tab" data-toggle="tab" href="#features">Features</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link col-xs-4" id="technology-tab" data-toggle="tab" href="#technology">Technology</a>
+                </li>
+                <!--<li class="nav-item">-->
+                    <!--<a class="nav-link col-xs-4" id="more-tab" data-toggle="tab" href="#more">More</a>-->
+                <!--</li>-->
+            </ul>
+        </div>
+
+
+        <div class="col-md-12 col-xs-12 tab-content" id="description-options">
+            <div class="col-md-12 col-xs-12 tab-content tab-pane active" id="description">
+                <div id="description-content"></div>
+            </div>
+            <div class="col-md-12 col-xs-12 tab-content tab-pane" id="features">
+                <div id="features-content"></div>
+            </div>
+            <div class="col-md-12 col-xs-12 tab-content tab-pane" id="technology">
+                <div id="technology-content"></div>
+            </div>
+            <!--<div class="col-md-12 col-xs-12 tab-content tab-pane" id="more">-->
+                <!--<div class="col-md-8 col-xs-12">-->
+                    <!--<span class="more-label">Algorithm : </span><span id="algorithm-content"></span><br>-->
+                    <!--<span class="more-label">Twitter : </span><a target="_blank" id="twitter-content">Tweeter</a><br>-->
+                    <!--<span class="more-label">Start Date : </span><span id="startdate-content"></span><br>-->
+                    <!--<span class="more-label">Sponsor : </span><a target="_blank" id="link-content">Link</a><br>-->
+                    <!--<span class="more-label">Total Coins Mined : </span><span id="total-coins-mined-content"></span><br>-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+    </div>
+
+</div>
+
+
+
+<% include partials/footer.ejs%>
+
+<script type="text/javascript">
+    const details = <%-JSON.stringify(details)%>;
+    const display = <%-JSON.stringify(display)%>;
+    const symbol = details.symbol;
+    const name = details.name;
+
+    let day = getURLParams('days') ? getURLParams('days') : 'seven_day';
+    $('option[value='+day+']').attr('selected', 'selected');
+    $(document).ready(function() {
+//        windowSizeActions();
+        $("#days-selector").change(function()
+        {
+            day = $("#days-selector option:selected").val();
+            getHistory(name, day);
+        });
+    });
+
+    if(name !== undefined){
+        getHistory(name, day);
+        getCoinDetails(symbol);
+    }
+</script>

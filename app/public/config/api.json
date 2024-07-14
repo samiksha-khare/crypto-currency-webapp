@@ -1,0 +1,19 @@
+{
+  "coinmarketcap" : {
+    "base": "https://pro-api.coinmarketcap.com/v1",
+    "ticker": "/cryptocurrency/listings/latest",
+    "global": "/global/"
+  },
+  "coincap" : {
+    "base" : "https://rest.coincap.io/v3/assets/",
+    "history_1day" : "/history/1day",
+    "history_7day" : "/history/7day",
+    "history_30day" : "/history/30day",
+    "history_90day" : "/history/90day"
+  },
+  "cryptoCompare" : {
+    "base" : "https://www.cryptocompare.com",
+    "coinList" : "/api/data/coinlist/",
+    "coinDetails" : "/api/data/coinsnapshotfullbyid/"
+  }
+}
